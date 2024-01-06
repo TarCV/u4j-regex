@@ -1,0 +1,10 @@
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+.idea
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+.DS_Store
