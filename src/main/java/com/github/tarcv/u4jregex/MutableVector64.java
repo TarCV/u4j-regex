@@ -71,6 +71,7 @@ final class MutableVector64 {
         for (LongArrayView view : validViews) {
             view.invalidate();
         }
+        validViews.clear();
         length = 0;
     }
 
