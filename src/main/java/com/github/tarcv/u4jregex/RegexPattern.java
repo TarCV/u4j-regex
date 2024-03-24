@@ -13,9 +13,7 @@ package com.github.tarcv.u4jregex;
 
 import com.ibm.icu.text.UnicodeSet;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 import static com.github.tarcv.u4jregex.StartOfMatch.START_NO_INFO;
 import static com.github.tarcv.u4jregex.UErrorCode.*;
@@ -44,7 +42,7 @@ public final class RegexPattern {
     /**
      * The flags used when compiling the pattern.
      */
-    final /* uint32 */ long        fFlags;
+    final Set<URegexpFlag> fFlags;
     /**
      * The compiled pattern p-code.
      */
@@ -108,9 +106,13 @@ public final class RegexPattern {
 //    RegexPattern    Default Constructor
 //
 //--------------------------------------------------------------------------
-    private RegexPattern(final long fFlags, final String regex) {
+    private RegexPattern(final Collection<URegexpFlag> fFlags, final String regex) {
         // Init all of this instance's data.
-        this.fFlags            = fFlags;
+        if (fFlags.isEmpty()) {
+            this.fFlags = Collections.emptySet();
+        } else {
+            this.fFlags = EnumSet.copyOf(fFlags);
+        }
         fLiteralText = new StringBuffer();
         fMinMatchLen      = 0;
         fFrameSize        = 0;
@@ -185,17 +187,25 @@ public final class RegexPattern {
      * @since 74.2
      */
     public static RegexPattern compile(final String                regex,
-                          /* uint32 */final long             flags)
+                          /* uint32 */final Collection<URegexpFlag> flags)
     {
-    final /* uint32 */long allFlags = UREGEX_CANON_EQ.flag | UREGEX_CASE_INSENSITIVE.flag | UREGEX_COMMENTS.flag |
-            UREGEX_DOTALL.flag   | UREGEX_MULTILINE.flag        | UREGEX_UWORD.flag |
-            UREGEX_ERROR_ON_UNKNOWN_ESCAPES.flag           | UREGEX_UNIX_LINES.flag | UREGEX_LITERAL.flag;
-
-        if ((flags & ~allFlags) != 0) {
-            throw new UErrorException(U_REGEX_INVALID_FLAG);
+        for (URegexpFlag flag : flags) {
+            switch (flag) {
+                case UREGEX_CANON_EQ:
+                case UREGEX_CASE_INSENSITIVE:
+                case UREGEX_COMMENTS:
+                case UREGEX_DOTALL:
+                case UREGEX_MULTILINE:
+                case UREGEX_UWORD:
+                case UREGEX_ERROR_ON_UNKNOWN_ESCAPES:
+                case UREGEX_UNIX_LINES:
+                case UREGEX_LITERAL:
+                    break;
+                default:
+                    throw new UErrorException(U_REGEX_INVALID_FLAG);
+            }
         }
-
-        if ((flags & UREGEX_CANON_EQ.flag) != 0) {
+        if (flags.contains(UREGEX_CANON_EQ)) {
             throw new UErrorException(U_REGEX_UNIMPLEMENTED);
         }
 
@@ -223,15 +233,15 @@ public final class RegexPattern {
      */
 public static RegexPattern compile(final String               regex)
     {
-        return compile(regex, 0);
+        return compile(regex, Collections.emptySet());
     }
 
 
 /**
  * flags
  */
-public /* uint32 */ long flags() {
-        return fFlags;
+public Set<URegexpFlag> flags() {
+        return Collections.unmodifiableSet(fFlags);
     }
 
 
@@ -293,7 +303,7 @@ public /* uint32 */ long flags() {
         RegexPattern pat     = null;
         RegexMatcher matcher = null;
 
-        pat     = compile(regex, 0);
+        pat     = compile(regex, Collections.emptySet());
         matcher = pat.matcher();
         matcher.reset(input);
 

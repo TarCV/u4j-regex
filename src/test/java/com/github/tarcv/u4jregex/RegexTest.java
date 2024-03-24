@@ -21,8 +21,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -160,7 +164,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         RegexPattern        REPattern;
         RegexMatcher        REMatcher;
 
-        REPattern = RegexPattern.compile(new String(pat), 0);
+        REPattern = RegexPattern.compile(new String(pat), Collections.emptySet());
 
         StringBuffer inputString = new StringBuffer(new String(text));
         REMatcher = REPattern.matcher(Utility.unescape(inputString));
@@ -184,7 +188,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         boolean               retVal     = true;
 
         pattern = regextst_openUTF8FromInvariant(Util.toByteArray(pat), -1);
-        REPattern = RegexPattern.compile(pattern, 0);
+        REPattern = RegexPattern.compile(pattern, Collections.emptySet());
 
         StringBuffer inputString = new StringBuffer(new String(text));
         textChars = Utility.unescape(inputString).getBytes(StandardCharsets.UTF_8);
@@ -223,7 +227,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         StringBuffer patString = new StringBuffer(patStr);
 
         try {
-            callerPattern = RegexPattern.compile(patString.toString(), 0);
+            callerPattern = RegexPattern.compile(patString.toString(), Collections.emptySet());
         } catch (RegexParseException e) {
             Assert.assertEquals(expectedStatus, e.getErrorCode());
             Assert.assertEquals(errLine, e.getLine());
@@ -238,7 +242,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         String patternText;
         patternText = regextst_openUTF8FromInvariant(Util.toByteArray(patStr.toCharArray()), -1);
         try {
-            callerPattern = RegexPattern.compile(patternText, 0);
+            callerPattern = RegexPattern.compile(patternText, Collections.emptySet());
         } catch (RegexParseException e) {
             Assert.assertEquals(expectedStatus, e.getErrorCode());
             Assert.assertEquals(errLine, e.getLine());
@@ -394,7 +398,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
     final byte[] str_abc = { 0x61, 0x62, 0x63 }; /* abc */
         String pattern;
         pattern = utext_openUTF8(str_abc, -1);
-        RegexMatcher matcher = new RegexMatcher(pattern, 0);
+        RegexMatcher matcher = new RegexMatcher(pattern, Collections.emptySet());
 
         String input;
         input = utext_openUTF8(str_abc, -1);
@@ -421,7 +425,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         // Simple pattern compilation
         //
         {
-            int             flags = 0;
+            Set<URegexpFlag> flags = Collections.emptySet();
             StringBuffer       re = new StringBuffer("abc");
             RegexPattern        pat2;
             pat2 = RegexPattern.compile(re.toString(), flags);
@@ -511,7 +515,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             // Successful match at end of string.
             {
 
-                RegexMatcher m = new RegexMatcher("A?", 0);  // will match zero length string.
+                RegexMatcher m = new RegexMatcher("A?", Collections.emptySet());  // will match zero length string.
                 m.reset(inStr1.toString());
                 final int len = inStr1.length();
                 REGEX_ASSERT(m.matches(len) == true);
@@ -550,7 +554,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //     RegexMatcher.groupCount();
         //
         {
-            int             flags=0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             RegexPattern pat = RegexPattern.compile("01(23(45)67)(.*)", flags);
 
             RegexMatcher matcher = pat.matcher("0123456789");
@@ -607,7 +611,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //  find
         //
         {
-            int             flags=0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             RegexPattern pat = RegexPattern.compile("abc", flags);
 
             RegexMatcher matcher = pat.matcher(".abc..abc...abc..");
@@ -660,7 +664,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //  find, with \G in pattern (true if at the end of a previous match).
         //
         {
-            int             flags=0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             RegexPattern pat = RegexPattern.compile(".*?(?:(\\Gabc)|(abc))", flags);
 
             RegexMatcher matcher = pat.matcher(".abcabc.abc..");
@@ -686,7 +690,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         {
             int                 i;
 
-            RegexMatcher m = new RegexMatcher("(?= ?)", 0);   // This pattern will zero-length matches anywhere,
+            RegexMatcher m = new RegexMatcher("(?= ?)", Collections.emptySet());   // This pattern will zero-length matches anywhere,
             //   using an always-true look-ahead.
             StringBuffer s = new StringBuffer("    ");
             m.reset(s.toString());
@@ -717,7 +721,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             //        match of zero length at the end of the input string.
             int                 i;
 
-            RegexMatcher m = new RegexMatcher(".?", 0);
+            RegexMatcher m = new RegexMatcher(".?", Collections.emptySet());
             m.reset("    ");
             for (i=0; ; i++) {
                 if (m.find() == false) {
@@ -735,13 +739,13 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //
 
         {
-            RegexMatcher m = new RegexMatcher(".?", 0);
+            RegexMatcher m = new RegexMatcher(".?", Collections.emptySet());
             REGEX_ASSERT(m.find());
             Assert.assertEquals(0, m.start());
             Assert.assertEquals("", m.input().toString());
         }
         {
-            RegexPattern p = RegexPattern.compile(".", 0);
+            RegexPattern p = RegexPattern.compile(".", Collections.emptySet());
             RegexMatcher  m = p.matcher();
 
             Assert.assertFalse(m.find());
@@ -755,7 +759,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //
         {
             String testString = "This is test data";
-            RegexMatcher m = new RegexMatcher(".*", testString, 0L);
+            RegexMatcher m = new RegexMatcher(".*", testString, Collections.emptySet());
             Assert.assertEquals(0, m.regionStart());
             REGEX_ASSERT(m.regionEnd() == testString.length());
             Assert.assertFalse(m.hasTransparentBounds());
@@ -804,19 +808,19 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //
         {
             String testString = ("aabb");
-            RegexMatcher m1 = new RegexMatcher(".*", testString,  0);
+            RegexMatcher m1 = new RegexMatcher(".*", testString, Collections.emptySet());
             Assert.assertTrue(m1.lookingAt());
             Assert.assertTrue(m1.hitEnd());
             Assert.assertFalse(m1.requireEnd());
 
 
-            RegexMatcher m2 = new RegexMatcher("a*", testString, 0);
+            RegexMatcher m2 = new RegexMatcher("a*", testString, Collections.emptySet());
             Assert.assertTrue(m2.lookingAt());
             Assert.assertFalse(m2.hitEnd());
             Assert.assertFalse(m2.requireEnd());
 
 
-            RegexMatcher m3 = new RegexMatcher(".*$", testString, 0);
+            RegexMatcher m3 = new RegexMatcher(".*$", testString, Collections.emptySet());
             Assert.assertTrue(m3.lookingAt());
             Assert.assertTrue(m3.hitEnd());
             Assert.assertTrue(m3.requireEnd());
@@ -834,7 +838,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             //    Enough 'a's in the string to cause the match to time out.
             //       (Each on additional 'a' doubles the time)
             String testString = ("aaaaaaaaaaaaaaaaaaaaa");
-            RegexMatcher matcher = new RegexMatcher("(a+)+b", testString, 0);
+            RegexMatcher matcher = new RegexMatcher("(a+)+b", testString, Collections.emptySet());
             Assert.assertEquals(0, matcher.getTimeLimit());
             matcher.setTimeLimit(100);
             Assert.assertEquals(100, matcher.getTimeLimit());
@@ -844,7 +848,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
 
             //   Few enough 'a's to slip in under the time limit.
             String testString = ("aaaaaaaaaaaaaaaaaa");
-            RegexMatcher matcher = new RegexMatcher("(a+)+b", testString, 0);
+            RegexMatcher matcher = new RegexMatcher("(a+)+b", testString, Collections.emptySet());
             matcher.setTimeLimit(100);
             Assert.assertFalse(matcher.lookingAt());
         }
@@ -857,7 +861,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
 
             // Adding the capturing parentheses to the pattern "(A)+A$" inhibits optimizations
             //   of the '+', and makes the stack frames larger.
-            RegexMatcher matcher = new RegexMatcher("(A)+A$", testString, 0);
+            RegexMatcher matcher = new RegexMatcher("(A)+A$", testString, Collections.emptySet());
 
             // With the default stack, this match should fail to run
             REGEX_ASSERT_FAIL(() -> matcher.lookingAt(), U_REGEX_STACK_OVERFLOW);
@@ -880,7 +884,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         {
 
             String testString = ("abc");
-            RegexMatcher matcher = new RegexMatcher("abc", testString, 0);
+            RegexMatcher matcher = new RegexMatcher("abc", testString, Collections.emptySet());
             matcher.setStackLimit(30);
             Assert.assertTrue(matcher.matches());
             Assert.assertEquals(30, matcher.getStackLimit());
@@ -911,7 +915,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //
         //  Replace
         //
-        int             flags=0;
+        Set<URegexpFlag> flags=Collections.emptySet();
         String re = ("abc");
         RegexPattern pat = RegexPattern.compile(re, flags);
         StringBuffer data = new StringBuffer(".abc..abc...abc..");
@@ -1023,7 +1027,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //
         {
 
-            RegexMatcher m = new RegexMatcher("ss(.*?)ee", 0);
+            RegexMatcher m = new RegexMatcher("ss(.*?)ee", Collections.emptySet());
             ReplaceableString result = new ReplaceableString();
 
             // Multiple finds do NOT bump up the previous appendReplacement position.
@@ -1079,8 +1083,8 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         String re1 = ("abc[a-l][m-z]");
         String re2 = ("def");
 
-        RegexPattern pat1 = RegexPattern.compile(re1, 0);
-        RegexPattern pat2 = RegexPattern.compile(re2, 0);
+        RegexPattern pat1 = RegexPattern.compile(re1, Collections.emptySet());
+        RegexPattern pat2 = RegexPattern.compile(re2, Collections.emptySet());
         REGEX_ASSERT(pat1 != pata);
 
         patb = pat1;
@@ -1093,14 +1097,14 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         RegexPattern pat1a = RegexPattern.compile(re1);
         Assert.assertEquals(pat1, pat1a);
 
-        Assert.assertEquals(0, pat1a.flags());
+        Assert.assertTrue(pat1a.flags().isEmpty());
 
         // Compile with different flags should be not equal
-        RegexPattern pat1b = RegexPattern.compile(re1, UREGEX_CASE_INSENSITIVE.flag);
+        RegexPattern pat1b = RegexPattern.compile(re1, EnumSet.of(UREGEX_CASE_INSENSITIVE));
 
         REGEX_ASSERT(pat1b != pat1a);
-        Assert.assertEquals(UREGEX_CASE_INSENSITIVE.flag, pat1b.flags());
-        Assert.assertEquals(0, pat1a.flags());
+        Assert.assertEquals(EnumSet.of(UREGEX_CASE_INSENSITIVE), pat1b.flags());
+        Assert.assertTrue(pat1a.flags().isEmpty());
 
 
         // clone TODO
@@ -1120,7 +1124,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         // TODO
         /*{
 
-            RegexPattern pSource = RegexPattern.compile(("\\p{L}+"), 0);
+            RegexPattern pSource = RegexPattern.compile(("\\p{L}+"), Collections.emptySet());
             RegexPattern  *pClone     = pSource.clone();
 
             RegexMatcher  *mFromClone = pClone.matcher();
@@ -1343,7 +1347,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         // Simple pattern compilation
         //
         {
-            int             flags = 0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             StringWithOffset re;
             re = new StringWithOffset(regextst_openUTF8FromInvariant("abc".getBytes(), -1));
             REGEX_VERBOSE_TEXT(re);
@@ -1427,7 +1431,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             // Successful match at end of string.
             {
 
-                RegexMatcher m = new RegexMatcher("A?", 0);  // will match zero length string.
+                RegexMatcher m = new RegexMatcher("A?", Collections.emptySet());  // will match zero length string.
                 m.reset(input1.targetString);
                 REGEX_ASSERT(m.matches(input1Len) == true);
                 m.reset(empty);
@@ -1458,7 +1462,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //     RegexMatcher.groupCount();
         //
         {
-            int             flags=0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             String               re="";
         final byte str_01234567_pat[] = { 0x30, 0x31, 0x28, 0x32, 0x33, 0x28, 0x34, 0x35, 0x29, 0x36, 0x37, 0x29, 0x28, 0x2e, 0x2a, 0x29 }; /* 01(23(45)67)(.*) */
             re = utext_openUTF8(str_01234567_pat, -1);
@@ -1548,7 +1552,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //  find
         //
         {
-            int             flags=0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             String               re="";
         final byte[] str_abc = { 0x61, 0x62, 0x63 }; /* abc */
             re = utext_openUTF8(str_abc, -1);
@@ -1599,7 +1603,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //  find, with \G in pattern (true if at the end of a previous match).
         //
         {
-            int             flags=0;
+            Set<URegexpFlag> flags=Collections.emptySet();
             String               re="";
         final byte[] str_Gabcabc = { 0x2e, 0x2a, 0x3f, 0x28, 0x3f, 0x3a, 0x28, 0x5c, 0x47, 0x61, 0x62, 0x63, 0x29, 0x7c, 0x28, 0x61, 0x62, 0x63, 0x29, 0x29 }; /* .*?(?:(\\Gabc)|(abc)) */
             re = utext_openUTF8(str_Gabcabc, -1);
@@ -1629,7 +1633,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         {
             int                 i;
 
-            RegexMatcher m = new RegexMatcher("(?= ?)", 0);   // This pattern will zero-length matches anywhere,
+            RegexMatcher m = new RegexMatcher("(?= ?)", Collections.emptySet());   // This pattern will zero-length matches anywhere,
             //   using an always-true look-ahead.
             String s;
             s = utext_openUTF8("    ".getBytes(), -1);
@@ -1664,7 +1668,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             //        match of zero length at the end of the input string.
             int                 i;
 
-            RegexMatcher m = new RegexMatcher(".?", 0);
+            RegexMatcher m = new RegexMatcher(".?", Collections.emptySet());
             String s;
             s = utext_openUTF8("    ".getBytes(), -1);
             m.reset(s);
@@ -1685,14 +1689,14 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
 
         {
 
-            RegexMatcher m = new RegexMatcher(".?", 0);
+            RegexMatcher m = new RegexMatcher(".?", Collections.emptySet());
             REGEX_ASSERT(m.find());
             Assert.assertEquals(0, m.start());
             REGEX_ASSERT(m.input().toString().isEmpty());
         }
         {
 
-            RegexPattern p = RegexPattern.compile(".", 0);
+            RegexPattern p = RegexPattern.compile(".", Collections.emptySet());
             RegexMatcher  m = p.matcher();
 
             Assert.assertFalse(m.find());
@@ -1713,7 +1717,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             testText = regextst_openUTF8FromInvariant("This is test data".getBytes(), -1);
 //            REGEX_VERBOSE_TEXT(testText);
 
-            RegexMatcher m = new RegexMatcher(testPattern, testText, 0);
+            RegexMatcher m = new RegexMatcher(testPattern, testText, Collections.emptySet());
             Assert.assertEquals(0, m.regionStart());
             REGEX_ASSERT(m.regionEnd() == (int)strlen("This is test data".getBytes()));
             Assert.assertFalse(m.hasTransparentBounds());
@@ -1769,7 +1773,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
             testPattern = utext_openUTF8(str_, -1);
             testText = utext_openUTF8(str_aabb, -1);
 
-            RegexMatcher m1 = new RegexMatcher(testPattern, testText,  0);
+            RegexMatcher m1 = new RegexMatcher(testPattern, testText, Collections.emptySet());
             Assert.assertTrue(m1.lookingAt());
             Assert.assertTrue(m1.hitEnd());
             Assert.assertFalse(m1.requireEnd());
@@ -1777,7 +1781,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
 
         final byte[] str_a = { 0x61, 0x2a }; /* a* */
             testPattern = utext_openUTF8(str_a, -1);
-            RegexMatcher m2 = new RegexMatcher(testPattern, testText, 0);
+            RegexMatcher m2 = new RegexMatcher(testPattern, testText, Collections.emptySet());
             Assert.assertTrue(m2.lookingAt());
             Assert.assertFalse(m2.hitEnd());
             Assert.assertFalse(m2.requireEnd());
@@ -1785,7 +1789,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
 
         final byte[] str_dotstardollar = { 0x2e, 0x2a, 0x24 }; /* .*$ */
             testPattern = utext_openUTF8(str_dotstardollar, -1);
-            RegexMatcher m3 = new RegexMatcher(testPattern, testText, 0);
+            RegexMatcher m3 = new RegexMatcher(testPattern, testText, Collections.emptySet());
             Assert.assertTrue(m3.lookingAt());
             Assert.assertTrue(m3.hitEnd());
             Assert.assertTrue(m3.requireEnd());
@@ -1804,7 +1808,7 @@ static void REGEX_TESTLM(final String pat, final String text, final boolean look
         //
         //  Replace
         //
-        int             flags=0;
+        Set<URegexpFlag> flags=Collections.emptySet();
 
         String               re="";
         re = regextst_openUTF8FromInvariant("abc".getBytes(), -1);
@@ -2050,7 +2054,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
             dataText = utext_openUTF8(str_blah, -1);
             replText = utext_openUTF8(str_ooh, -1);
 
-            RegexMatcher m = new RegexMatcher(re, 0);
+            RegexMatcher m = new RegexMatcher(re, Collections.emptySet());
 
             result = new ReplaceableString();
 
@@ -2111,8 +2115,8 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         re1 = utext_openUTF8(str_abcalmz, -1);
         re2 = utext_openUTF8(str_def, -1);
 
-        RegexPattern pat1 = RegexPattern.compile(re1, 0);
-        RegexPattern pat2 = RegexPattern.compile(re2, 0);
+        RegexPattern pat1 = RegexPattern.compile(re1, Collections.emptySet());
+        RegexPattern pat2 = RegexPattern.compile(re2, Collections.emptySet());
         Assert.assertEquals(pat1, pat1);
         REGEX_ASSERT(pat1 != pata);
 
@@ -2124,14 +2128,14 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         RegexPattern pat1a = RegexPattern.compile(re1);
         Assert.assertEquals(pat1, pat1a);
 
-        Assert.assertEquals(0, pat1a.flags());
+        Assert.assertTrue(pat1a.flags().isEmpty());
 
         // Compile with different flags should be not equal
-        RegexPattern pat1b = RegexPattern.compile(re1, UREGEX_CASE_INSENSITIVE.flag);
+        RegexPattern pat1b = RegexPattern.compile(re1, EnumSet.of(UREGEX_CASE_INSENSITIVE));
 
         REGEX_ASSERT(pat1b != pat1a);
-        Assert.assertEquals(UREGEX_CASE_INSENSITIVE.flag, pat1b.flags());
-        Assert.assertEquals(0, pat1a.flags());
+        Assert.assertEquals(EnumSet.of(UREGEX_CASE_INSENSITIVE), pat1b.flags());
+        Assert.assertTrue(pat1a.flags().isEmpty());
 
 
         // clone TODO
@@ -2151,7 +2155,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         final char str_pL[] = { 0x5c, 0x70, 0x7b, 0x4c, 0x7d, 0x2b }; *//* \p{L}+ *//*
             pattern = utext_openUTF8(str_pL, -1);
 
-            RegexPattern pSource = RegexPattern.compile(pattern, 0);
+            RegexPattern pSource = RegexPattern.compile(pattern, Collections.emptySet());
             RegexPattern  *pClone     = pSource.clone();
 
             RegexMatcher  mFromClone = pClone.matcher();
@@ -2346,7 +2350,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //
         {
 
-            RegexMatcher matcher = new RegexMatcher("(:)", 0);
+            RegexMatcher matcher = new RegexMatcher("(:)", Collections.emptySet());
 
             String[] splits = new String[10];
             int numFields = matcher.split("first:second:third", splits, splits.length);
@@ -2423,11 +2427,11 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //
         String testString = new String(testData);
 
-        RegexMatcher quotedStuffMat = new RegexMatcher(("\\s*([\\'\\\"/])(.*?)\\1"), 0);
-        RegexMatcher    commentMat  = new RegexMatcher(("\\s*(#.*)?$"), 0);
-        RegexMatcher    flagsMat    = new RegexMatcher(("\\s*([ixsmdteDEGLMQvabtyYzZ2-9]*)([:letter:]*)"), 0);
+        RegexMatcher quotedStuffMat = new RegexMatcher(("\\s*([\\'\\\"/])(.*?)\\1"), Collections.emptySet());
+        RegexMatcher    commentMat  = new RegexMatcher(("\\s*(#.*)?$"), Collections.emptySet());
+        RegexMatcher    flagsMat    = new RegexMatcher(("\\s*([ixsmdteDEGLMQvabtyYzZ2-9]*)([:letter:]*)"), Collections.emptySet());
 
-        RegexMatcher lineMat = new RegexMatcher("(.*?)\\r?\\n", testString, 0);
+        RegexMatcher lineMat = new RegexMatcher("(.*?)\\r?\\n", testString, Collections.emptySet());
         String testPattern;   // The pattern for test from the test file.
         String testFlags;     // the flags   for a test.
         String matchString;   // The marked up string to be used as input
@@ -2604,28 +2608,28 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //
         //  Compile the caller's pattern
         //
-        long bflags = 0;
+        Collection<URegexpFlag> bflags = new ArrayList<>();
         if (flags.indexOf((char)0x69) >= 0)  { // 'i' flag
-            bflags |= UREGEX_CASE_INSENSITIVE.flag;
+            bflags.add(UREGEX_CASE_INSENSITIVE);
         }
         if (flags.indexOf((char)0x78) >= 0)  { // 'x' flag
-            bflags |= UREGEX_COMMENTS.flag;
+            bflags.add(UREGEX_COMMENTS);
         }
         if (flags.indexOf((char)0x73) >= 0)  { // 's' flag
-            bflags |= UREGEX_DOTALL.flag;
+            bflags.add(UREGEX_DOTALL);
         }
         if (flags.indexOf((char)0x6d) >= 0)  { // 'm' flag
-            bflags |= UREGEX_MULTILINE.flag;
+            bflags.add(UREGEX_MULTILINE);
         }
 
         if (flags.indexOf((char)0x65) >= 0) { // 'e' flag
-            bflags |= UREGEX_ERROR_ON_UNKNOWN_ESCAPES.flag;
+            bflags.add(UREGEX_ERROR_ON_UNKNOWN_ESCAPES);
         }
         if (flags.indexOf((char)0x44) >= 0) { // 'D' flag
-            bflags |= UREGEX_UNIX_LINES.flag;
+            bflags.add(UREGEX_UNIX_LINES);
         }
         if (flags.indexOf((char)0x51) >= 0) { // 'Q' flag
-            bflags |= UREGEX_LITERAL.flag;
+            bflags.add(UREGEX_LITERAL);
         }
 
 
@@ -2696,7 +2700,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //  Find the tags in the input data, remove them, and record the group boundary
         //    positions.
         //
-        parsePat = RegexPattern.compile("<(/?)(r|[0-9]+)>", 0);
+        parsePat = RegexPattern.compile("<(/?)(r|[0-9]+)>", Collections.emptySet());
 
         {
             String unescaped;
@@ -2936,9 +2940,9 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
 
         // Attempt to use non-default flags
         {
-            long flags  = UREGEX_CANON_EQ.flag |
-                    UREGEX_COMMENTS.flag         | UREGEX_DOTALL.flag   |
-                    UREGEX_MULTILINE.flag;
+            Collection<URegexpFlag> flags  = EnumSet.of(UREGEX_CANON_EQ,
+                    UREGEX_COMMENTS, UREGEX_DOTALL,
+                    UREGEX_MULTILINE);
             try {
                 RegexPattern pat1 = RegexPattern.compile(".*", flags);
             } catch (UErrorException e) {
@@ -3038,14 +3042,14 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //  Regex to break the input file into lines, and strip the new lines.
         //     One line per match, capture group one is the desired data.
         //
-        RegexPattern linePat = RegexPattern.compile(("(.+?)[\\r\\n]+"), 0);
+        RegexPattern linePat = RegexPattern.compile(("(.+?)[\\r\\n]+"), Collections.emptySet());
         RegexMatcher lineMat = linePat.matcher(testDataString.toString());
 
         //
         //  Regex to split a test file line into fields.
         //    There are six fields, separated by tabs.
         //
-        RegexPattern fieldPat = RegexPattern.compile(("\\t"), 0);
+        RegexPattern fieldPat = RegexPattern.compile(("\\t"), Collections.emptySet());
 
         //
         //  Regex to identify test patterns with flag settings, and to separate them.
@@ -3053,7 +3057,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //    Test patterns without flags are not quoted:   pattern
         //   Coming out, capture group 2 is the pattern, capture group 3 is the flags.
         //
-        RegexPattern flagPat = RegexPattern.compile(("('?)(.*)\\1(.*)"), 0);
+        RegexPattern flagPat = RegexPattern.compile(("('?)(.*)\\1(.*)"), Collections.emptySet());
         RegexMatcher flagMat = flagPat.matcher();
 
         //
@@ -3070,11 +3074,11 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         ffff = Utility.unescape(ffff);
 
         //  regexp for $-[0], $+[2], etc.
-        RegexPattern groupsPat = RegexPattern.compile(("\\$([+\\-])\\[(\\d+)\\]"), 0);
+        RegexPattern groupsPat = RegexPattern.compile(("\\$([+\\-])\\[(\\d+)\\]"), Collections.emptySet());
         RegexMatcher groupsMat = groupsPat.matcher();
 
         //  regexp for $0, $1, $2, etc.
-        RegexPattern cgPat = RegexPattern.compile(("\\$(\\d+)"), 0);
+        RegexPattern cgPat = RegexPattern.compile(("\\$(\\d+)"), Collections.emptySet());
         RegexMatcher cgMat = cgPat.matcher();
 
 
@@ -3108,20 +3112,20 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
             //    split off the flags, remove the extra quotes.
             //
             String flagStr = flagMat.group(3);
-            long flags = 0;
+            Collection<URegexpFlag> flags =  new ArrayList<>();
         final char UChar_c = 0x63;  // Char constants for the flag letters.
         final char UChar_i = 0x69;  //   (Damn the lack of Unicode support in C)
         final char UChar_m = 0x6d;
         final char UChar_x = 0x78;
         final char UChar_y = 0x79;
             if (flagStr.indexOf(UChar_i) != -1) {
-                flags |= UREGEX_CASE_INSENSITIVE.flag;
+                flags.add(UREGEX_CASE_INSENSITIVE);
             }
             if (flagStr.indexOf(UChar_m) != -1) {
-                flags |= UREGEX_MULTILINE.flag;
+                flags.add(UREGEX_MULTILINE);
             }
             if (flagStr.indexOf(UChar_x) != -1) {
-                flags |= UREGEX_COMMENTS.flag;
+                flags.add(UREGEX_COMMENTS);
             }
 
             //
@@ -3346,14 +3350,14 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //  Regex to break the input file into lines, and strip the new lines.
         //     One line per match, capture group one is the desired data.
         //
-        RegexPattern linePat = RegexPattern.compile(("(.+?)[\\r\\n]+"), 0);
+        RegexPattern linePat = RegexPattern.compile(("(.+?)[\\r\\n]+"), Collections.emptySet());
         RegexMatcher lineMat = linePat.matcher(testDataString.toString());
 
         //
         //  Regex to split a test file line into fields.
         //    There are six fields, separated by tabs.
         //
-        RegexPattern fieldPat = RegexPattern.compile(("\\t"), 0);
+        RegexPattern fieldPat = RegexPattern.compile(("\\t"), Collections.emptySet());
 
         //
         //  Regex to identify test patterns with flag settings, and to separate them.
@@ -3361,7 +3365,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         //    Test patterns without flags are not quoted:   pattern
         //   Coming out, capture group 2 is the pattern, capture group 3 is the flags.
         //
-        RegexPattern flagPat = RegexPattern.compile(("('?)(.*)\\1(.*)"), 0);
+        RegexPattern flagPat = RegexPattern.compile(("('?)(.*)\\1(.*)"), Collections.emptySet());
         RegexMatcher flagMat = flagPat.matcher();
 
         //
@@ -3378,11 +3382,11 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         ffff = Utility.unescape(ffff);
 
         //  regexp for $-[0], $+[2], etc.
-        RegexPattern groupsPat = RegexPattern.compile(("\\$([+\\-])\\[(\\d+)\\]"), 0);
+        RegexPattern groupsPat = RegexPattern.compile(("\\$([+\\-])\\[(\\d+)\\]"), Collections.emptySet());
         RegexMatcher groupsMat = groupsPat.matcher();
 
         //  regexp for $0, $1, $2, etc.
-        RegexPattern cgPat = RegexPattern.compile(("\\$(\\d+)"), 0);
+        RegexPattern cgPat = RegexPattern.compile(("\\$(\\d+)"), Collections.emptySet());
         RegexMatcher cgMat = cgPat.matcher();
 
 
@@ -3416,20 +3420,20 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
             //    split off the flags, remove the extra quotes.
             //
             String flagStr = flagMat.group(3);
-            long flags = 0;
+            Collection<URegexpFlag> flags = new ArrayList<>();
         final char UChar_c = 0x63;  // Char constants for the flag letters.
         final char UChar_i = 0x69;  //   (Damn the lack of Unicode support in C)
         final char UChar_m = 0x6d;
         final char UChar_x = 0x78;
         final char UChar_y = 0x79;
             if (flagStr.indexOf(UChar_i) != -1) {
-                flags |= UREGEX_CASE_INSENSITIVE.flag;
+                flags.add(UREGEX_CASE_INSENSITIVE);
             }
             if (flagStr.indexOf(UChar_m) != -1) {
-                flags |= UREGEX_MULTILINE.flag;
+                flags.add(UREGEX_MULTILINE);
             }
             if (flagStr.indexOf(UChar_x) != -1) {
-                flags |= UREGEX_COMMENTS.flag;
+                flags.add(UREGEX_COMMENTS);
             }
 
             //
@@ -3646,7 +3650,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
 //---------------------------------------------------------------
     @Test
     public void Bug6149() {
-        int flags = 0;
+        Set<URegexpFlag> flags=Collections.emptySet();
 
 
         RegexMatcher matcher = new RegexMatcher("(a?){1,8000000}", "xyz", flags);
@@ -3698,7 +3702,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
             URegexMatchCallback returnedFn;
 
 
-            RegexMatcher matcher = new RegexMatcher("x", 0);
+            RegexMatcher matcher = new RegexMatcher("x", Collections.emptySet());
             returnedFn = matcher.getMatchCallback();
             returnedContext = matcher.getMatchCallbackContext();
             Assert.assertNull(returnedFn);
@@ -3711,7 +3715,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
             final Object returnedContext;
             URegexMatchCallback returnedFn;
 
-            RegexMatcher matcher = new RegexMatcher(("((.)+\\2)+x"), 0);  // A pattern that can run long.
+            RegexMatcher matcher = new RegexMatcher(("((.)+\\2)+x"), Collections.emptySet());  // A pattern that can run long.
             matcher.setMatchCallback(testCallBackFn, cbInfo);
             returnedFn = matcher.getMatchCallback();
             returnedContext = matcher.getMatchCallbackContext();
@@ -3799,7 +3803,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
             URegexFindProgressCallback  returnedFn = testProgressCallBackFn;
 
 
-            RegexMatcher matcher = new RegexMatcher("x", 0);
+            RegexMatcher matcher = new RegexMatcher("x", Collections.emptySet());
             returnedFn = matcher.getFindProgressCallback();
             returnedContext = matcher.getFindProgressCallbackContext();
             Assert.assertNull(returnedFn);
@@ -3812,7 +3816,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
         final Object returnedContext;
             URegexFindProgressCallback  returnedFn;
 
-            RegexMatcher matcher = new RegexMatcher(("((.)\\2)x"), 0);
+            RegexMatcher matcher = new RegexMatcher(("((.)\\2)x"), Collections.emptySet());
             matcher.setFindProgressCallback(testProgressCallBackFn, cbInfo);
             returnedFn = matcher.getFindProgressCallback();
             returnedContext = matcher.getFindProgressCallbackContext();
@@ -3868,7 +3872,7 @@ final byte[] str_ooh = { 0x6f, 0x6f, 0x68 }; /* ooh */
 @Test
 public void NamedCapture() {
 
-        RegexPattern pat = RegexPattern.compile("abc()()(?<three>xyz)(de)(?<five>hmm)(?<six>oh)f\\k<five>", 0);
+        RegexPattern pat = RegexPattern.compile("abc()()(?<three>xyz)(de)(?<five>hmm)(?<six>oh)f\\k<five>", Collections.emptySet());
         int group = pat.groupNumberFromName("five");
         Assert.assertEquals(group, 5);
         group = pat.groupNumberFromName("three");
@@ -3886,7 +3890,7 @@ public void NamedCapture() {
         StringBuffer replacedText;
 
         {
-            RegexMatcher m = new RegexMatcher("<<(?<mid>.+?)>>", text.toString(), 0);
+            RegexMatcher m = new RegexMatcher("<<(?<mid>.+?)>>", text.toString(), Collections.emptySet());
             // m.pattern().dumpPattern();
             replacedText = m.replaceAll("'${mid}'");
             Assert.assertEquals("Substitution of 'quotes' for 'double brackets'", replacedText.toString());
@@ -3895,7 +3899,7 @@ public void NamedCapture() {
         // ReplaceAll, allowed capture group numbers.
         {
             text = new StringBuffer("abcmxyz");
-            RegexMatcher m = new RegexMatcher("..(?<one>m)(.)(.)", text.toString(), 0);
+            RegexMatcher m = new RegexMatcher("..(?<one>m)(.)(.)", text.toString(), Collections.emptySet());
 
 
             replacedText = m.replaceAll("<$0>");   // group 0, full match, is allowed.
@@ -3971,7 +3975,7 @@ public void NamedCapture() {
             nnbuf = String.format("(?<nn%d>)", nn);
             pattern.append(nnbuf);
         }
-        RegexPattern pat = RegexPattern.compile(pattern.toString(), 0);
+        RegexPattern pat = RegexPattern.compile(pattern.toString(), Collections.emptySet());
         for (nn=1; nn<goodLimit; nn++) {
             nnbuf = String.format("nn%d", nn);
             int groupNum = pat.groupNumberFromName(nnbuf);
@@ -3987,7 +3991,7 @@ public void NamedCapture() {
             pattern.append(nnbuf);
         }
 
-        REGEX_ASSERT_FAIL(() -> RegexPattern.compile(pattern.toString(), 0), U_REGEX_PATTERN_TOO_BIG);
+        REGEX_ASSERT_FAIL(() -> RegexPattern.compile(pattern.toString(), Collections.emptySet()), U_REGEX_PATTERN_TOO_BIG);
     }
 
 
@@ -4006,7 +4010,7 @@ public void NamedCapture() {
         RegexPattern  REPattern = null;
         RegexMatcher  REMatcher = null;
 
-        REPattern = RegexPattern.compile(pattern1, 0);
+        REPattern = RegexPattern.compile(pattern1, Collections.emptySet());
         REMatcher = REPattern.matcher(s.toString());
         REGEX_ASSERT(REMatcher.find());
         Assert.assertEquals(0, REMatcher.start());
@@ -4014,7 +4018,7 @@ public void NamedCapture() {
 
 
 
-        REPattern = RegexPattern.compile(pattern2, 0);
+        REPattern = RegexPattern.compile(pattern2, Collections.emptySet());
         REMatcher = REPattern.matcher(s.toString());
         REGEX_ASSERT(REMatcher.find());
         Assert.assertEquals(0, REMatcher.start());
@@ -4026,7 +4030,7 @@ public void NamedCapture() {
     @Test
     public void Bug7740() {
 
-        RegexMatcher m = new RegexMatcher("(a)", "abcdef", 0);
+        RegexMatcher m = new RegexMatcher("(a)", "abcdef", Collections.emptySet());
         REGEX_ASSERT(m.lookingAt());
     }
 
@@ -4034,7 +4038,7 @@ public void NamedCapture() {
 
     @Test
     public void Bug8479() {
-        final RegexMatcher pMatcher = new RegexMatcher("\\Aboo\\z", UREGEX_DOTALL.flag|UREGEX_CASE_INSENSITIVE.flag);
+        final RegexMatcher pMatcher = new RegexMatcher("\\Aboo\\z", EnumSet.of(UREGEX_DOTALL, UREGEX_CASE_INSENSITIVE));
         pMatcher.reset("");
         Assert.assertFalse(pMatcher.matches());
     }
@@ -4045,7 +4049,7 @@ public void NamedCapture() {
     public void Bug7029() {
 
 
-        final RegexMatcher pMatcher = new RegexMatcher(".", 0);
+        final RegexMatcher pMatcher = new RegexMatcher(".", Collections.emptySet());
         String text = "abc.def";
         String[] splits = new String[10];
         int numFields = pMatcher.split(text, splits, 10);
@@ -4128,7 +4132,7 @@ public void NamedCapture() {
     // Run a single test case from TestBug11049(). Internal function.
     void TestCase11049(final String patternStr, final String dataStr, boolean expectMatch) {
         String patternString = Utility.unescape(patternStr);
-        RegexPattern compiledPat = RegexPattern.compile(patternString, 0);
+        RegexPattern compiledPat = RegexPattern.compile(patternString, Collections.emptySet());
 
         String dataString = Utility.unescape(dataStr);
         char[] exactBuffer = new char[dataString.length()];
@@ -4162,7 +4166,7 @@ public void NamedCapture() {
             for (int i = 0; i < 8000000; i++) {
                 patternString.append("()");
             }
-            REGEX_ASSERT_FAIL(() -> RegexPattern.compile(patternString.toString(), 0), U_REGEX_PATTERN_TOO_BIG);
+            REGEX_ASSERT_FAIL(() -> RegexPattern.compile(patternString.toString(), Collections.emptySet()), U_REGEX_PATTERN_TOO_BIG);
         }
         {
             StringBuffer patternString = new StringBuffer("(");
@@ -4170,7 +4174,7 @@ public void NamedCapture() {
                 patternString.append("A++");
             }
             patternString.append("){0}B++");
-            REGEX_ASSERT_FAIL(() -> RegexPattern.compile(patternString.toString(), 0), U_REGEX_PATTERN_TOO_BIG);
+            REGEX_ASSERT_FAIL(() -> RegexPattern.compile(patternString.toString(), Collections.emptySet()), U_REGEX_PATTERN_TOO_BIG);
         }
         {
         // Pattern with too much string data, such that string indexes overflow operand data field size
@@ -4181,7 +4185,7 @@ public void NamedCapture() {
             patternString.append("stuff and things dont you know, these are a few of my favorite strings\n");
         }
         patternString.append("X? trailing string");
-        REGEX_ASSERT_FAIL(() -> RegexPattern.compile(patternString.toString(), 0), U_REGEX_PATTERN_TOO_BIG);
+        REGEX_ASSERT_FAIL(() -> RegexPattern.compile(patternString.toString(), Collections.emptySet()), U_REGEX_PATTERN_TOO_BIG);
         }
     }
 
@@ -4193,7 +4197,7 @@ public void NamedCapture() {
 
 
         // String API, length of match is 0 for non-participating matches.
-        RegexMatcher matcher = new RegexMatcher("(A)|(B)", 0);
+        RegexMatcher matcher = new RegexMatcher("(A)|(B)", Collections.emptySet());
         matcher.reset("A");
         REGEX_ASSERT(matcher.lookingAt(0));
 
@@ -4213,13 +4217,13 @@ public void NamedCapture() {
         // setTimeLimit() was not effective for empty sub-patterns with large {minimum counts}
         StringBuffer text = new StringBuffer("hello");
 
-        RegexMatcher m = new RegexMatcher("(((((((){120}){11}){11}){11}){80}){11}){4}", text.toString(), 0);
+        RegexMatcher m = new RegexMatcher("(((((((){120}){11}){11}){11}){80}){11}){4}", text.toString(), Collections.emptySet());
         m.setTimeLimit(5);
         REGEX_ASSERT_FAIL(() -> m.find(), U_REGEX_TIME_OUT);
 
         // Non-greedy loops. They take a different code path during matching.
 
-        RegexMatcher ngM = new RegexMatcher("(((((((){120}?){11}?){11}?){11}?){80}?){11}?){4}?", text.toString(), 0);
+        RegexMatcher ngM = new RegexMatcher("(((((((){120}?){11}?){11}?){11}?){80}?){11}?){4}?", text.toString(), Collections.emptySet());
         ngM.setTimeLimit(5);
         REGEX_ASSERT_FAIL(() -> ngM.find(), U_REGEX_TIME_OUT);
 
@@ -4247,7 +4251,7 @@ public void NamedCapture() {
                 "(?<=^)"
         };
         for (String pat : pats) {
-            RegexMatcher matcher = new RegexMatcher(pat, 0);
+            RegexMatcher matcher = new RegexMatcher(pat, Collections.emptySet());
             String ut = new String(new char[] {'a'}, 0, 1);
             matcher.reset(ut);
             while (matcher.find()) {

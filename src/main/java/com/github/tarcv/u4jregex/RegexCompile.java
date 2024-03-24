@@ -321,7 +321,13 @@ class RegexCompile {
         fCharNum = 0;
         fQuoteMode = false;
         fInBackslashQuote = false;
-        fModeFlags = Math.toIntExact(fRXPat.fFlags) | 0x80000000;
+        {
+            long combinedFlags = 0;
+            for (URegexpFlag flag : fRXPat.fFlags) {
+                combinedFlags |= flag.flag;
+            }
+            fModeFlags = Math.toIntExact(combinedFlags) | 0x80000000;
+        }
         fEOLComments = true;
 
         fMatchOpenParen = -1;

@@ -17,6 +17,7 @@ import com.ibm.icu.util.ULocale;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -247,7 +248,7 @@ public final class RegexMatcher {
      *  @since 74.2
      */
     public RegexMatcher(final String regexp, final String input,
-            /* uint32 */final long flags) {
+            final Collection<URegexpFlag> flags) {
         this(RegexPattern.compile(regexp, flags), input);
     }
 
@@ -263,7 +264,7 @@ public final class RegexMatcher {
      *  @param flags  {@link URegexpFlag} options, such as {@link URegexpFlag#UREGEX_CASE_INSENSITIVE}.
      *  @since 74.2
      */
-    public RegexMatcher(final String regexp,/* uint32 */final long flags) {
+    public RegexMatcher(final String regexp, final Collection<URegexpFlag> flags) {
         this(RegexPattern.compile(regexp, flags), RegexStaticSets.INSTANCE.fEmptyText);
     }
 
@@ -834,7 +835,7 @@ public final class RegexMatcher {
                     Util.utext_setNativeIndex(fInputText, startPos);
                 }
 
-                if ((fPattern.fFlags & UREGEX_UNIX_LINES.flag) != 0) {
+                if (fPattern.fFlags.contains(UREGEX_UNIX_LINES)) {
                     for (; ; ) {
                         if (ch == 0x0a) {
                             MatchAt(startPos, false);
@@ -1074,7 +1075,7 @@ public final class RegexMatcher {
                     startPos = U16_FWD_1(inputBuf, startPos, Math.toIntExact(fActiveLimit));
                 }
 
-                if ((fPattern.fFlags & UREGEX_UNIX_LINES.flag) != 0) {
+                if (fPattern.fFlags.contains(UREGEX_UNIX_LINES)) {
                     for (; ; ) {
                         ch = inputBuf[startPos - 1];
                         if (ch == 0x0a) {
