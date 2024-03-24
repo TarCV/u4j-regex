@@ -1,2 +1,2 @@
-rootProject.name = "icu4j-regex"
+rootProject.name = "u4jregex"
 
